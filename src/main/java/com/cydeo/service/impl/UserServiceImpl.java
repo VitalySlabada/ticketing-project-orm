@@ -7,14 +7,13 @@ import com.cydeo.repository.UserRepository;
 import com.cydeo.service.UserService;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
-public class  UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -27,7 +26,7 @@ public class  UserServiceImpl implements UserService {
     @Override
     public List<UserDTO> listAllUsers() {
 
-        List<User> userList = userRepository.findAll(Sort.by("firstName"));// SELECT * FROM USERS WHERE isDeleted = false
+        List<User> userList = userRepository.findAll(Sort.by("firstName"));
         return userList.stream().map(userMapper::convertToDTO).collect(Collectors.toList());
 
     }
@@ -61,16 +60,22 @@ public class  UserServiceImpl implements UserService {
 
     @Override
     public void deleteByUserName(String username) {
-
         userRepository.deleteByUserName(username);
 
     }
 
     @Override
     public void delete(String username) {
-        // no  delteing from database, but instead change the flag and keep in db
         User user = userRepository.findByUserName(username);
         user.setIsDeleted(true);
         userRepository.save(user);
+    }
+
+    @Override
+    public List<UserDTO> listAllByRole(String role) {
+
+        List<User> users = userRepository.findAllByRoleDescriptionIgnoreCase(role);
+
+        return users.stream().map(userMapper::convertToDTO).collect(Collectors.toList());
     }
 }
