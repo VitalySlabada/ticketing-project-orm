@@ -1,6 +1,5 @@
 package com.cydeo.mapper;
 
-
 import com.cydeo.dto.TaskDTO;
 import com.cydeo.entity.Task;
 import org.modelmapper.ModelMapper;
@@ -15,12 +14,11 @@ public class TaskMapper {
         this.modelMapper = modelMapper;
     }
 
-    public TaskDTO convertToDto(Task task) {
-        return modelMapper.map(task, TaskDTO.class);
+    public Task convertToEntity(TaskDTO dto){
+        return modelMapper.map(dto,Task.class);
     }
 
-    public Task convertToEntity(TaskDTO dto) {
-        return modelMapper.map(dto, Task.class);
+    public TaskDTO convertToDTO(Task entity){
+        return modelMapper.map(entity,TaskDTO.class);
     }
-
 }

@@ -36,7 +36,7 @@ public class ProjectController {
     }
 
     @PostMapping("/create")
-    public String insertProject(@Valid @ModelAttribute("project") ProjectDTO project, BindingResult bindingResult, Model model) {
+    public String insertProject(@ModelAttribute("project") ProjectDTO project, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
 
@@ -79,7 +79,7 @@ public class ProjectController {
     }
 
     @PostMapping("/update")
-    public String updateProject(@Valid @ModelAttribute("project") ProjectDTO project, BindingResult bindingResult, Model model) {
+    public String updateProject(@ModelAttribute("project") ProjectDTO project, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
 
@@ -95,10 +95,11 @@ public class ProjectController {
 
     }
 
+
     @GetMapping("/manager/project-status")
     public String getProjectByManager(Model model) {
 
-        List<ProjectDTO> projects = projectService.listAllProjectDetails();
+       List<ProjectDTO> projects = projectService.listAllProjectDetails();
 
         model.addAttribute("projects", projects);
 

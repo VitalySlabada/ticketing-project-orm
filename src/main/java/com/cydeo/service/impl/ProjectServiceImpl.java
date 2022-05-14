@@ -70,39 +70,76 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.save(convertedProject);
 
 
+
     }
 
     @Override
     public void delete(String code) {
         Project project = projectRepository.findByProjectCode(code);
+
         project.setIsDeleted(true);
+        project.setProjectCode(project.getProjectCode() + "-" + project.getId());
+
         projectRepository.save(project);
+
+        taskService.deleteByProject(projectMapper.convertToDto(project));
 
     }
 
     @Override
     public void complete(String projectCode) {
+
         Project project = projectRepository.findByProjectCode(projectCode);
         project.setProjectStatus(Status.COMPLETE);
+
         projectRepository.save(project);
+
+        taskService.completeByProject(projectMapper.convertToDto(project));
     }
 
     @Override
     public List<ProjectDTO> listAllProjectDetails() {
 
-
-        UserDTO currentUserDto = userService.findByUserName("harold@manager.com");
-
-        User user = userMapper.convertToEntity(currentUserDto);
+        UserDTO currentUserDTO = userService.findByUserName("harold@manager.com");
+        User user = userMapper.convertToEntity(currentUserDTO);
 
         List<Project> list = projectRepository.findAllByAssignedManager(user);
 
-        return list.stream().map(project->{
+        return list.stream().map(project -> {
 
             ProjectDTO obj = projectMapper.convertToDto(project);
-            obj.setUnfinishedTaskCounts(taskService.totalNonCompletedTasks(project.getProjectCode()));
-            obj.setCompleteTaskCounts(taskService.totalCompletedTasks(project.getProjectCode()));
+
+            obj.setUnfinishedTaskCounts(taskService.totalNonCompletedTask(project.getProjectCode()));
+            obj.setCompleteTaskCounts(taskService.totalCompletedTask(project.getProjectCode()));
+
+
             return obj;
+
+
+
         }).collect(Collectors.toList());
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
