@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Data
 public class ProjectDTO {
 
-
+    private Long id;
 
     @NotBlank
     private String projectName;
